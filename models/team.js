@@ -15,7 +15,7 @@ const teamSchema = new mongoose.Schema({
   theme: { type: String, required: true },
   participantType: { type: String, required: true },
   source: { type: String, required: true },
-  termsAccepted: { type: Boolean, required: true },
+  // termsAccepted: { type: Boolean, required: true },
   members: [memberSchema],
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   createdAt: { type: Date, default: Date.now },

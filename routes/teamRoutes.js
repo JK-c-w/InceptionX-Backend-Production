@@ -5,11 +5,11 @@ const { ensureAuth } = require("../middleware/authMiddleware");
 const router = express.Router();
 
 // Register a team
-router.post("/register", ensureAuth, async (req, res) => {
+router.post("/register",ensureAuth ,async (req, res) => {
   try {
     console.log("Incoming Registration Data:", req.body); // Debug incoming request
 
-    const { teamName, teamDescription, teamSize, theme, participantType, source, termsAccepted, members } = req.body;
+    const { teamName, teamDescription, teamSize, theme, participantType, source, members } = req.body;
 
     // 🛠 Check if `req.body` is missing
     if (!req.body || Object.keys(req.body).length === 0) {
@@ -18,7 +18,7 @@ router.post("/register", ensureAuth, async (req, res) => {
     }
 
     // 🛠 Validate required fields
-    if (!teamName || !theme || !participantType || !source || !termsAccepted || !Array.isArray(members)) {
+    if (!teamName || !theme || !participantType || !source  || !Array.isArray(members)) {
       console.error(" Missing required fields:", req.body);
       return res.status(400).json({ message: "All required fields must be filled correctly." });
     }
@@ -28,9 +28,9 @@ router.post("/register", ensureAuth, async (req, res) => {
       console.error(` Mismatch: Expected teamSize ${teamSize}, but got ${members.length}`);
       return res.status(400).json({ message: "Number of members must match team size." });
     }
-
     // 🛠 Ensure user authentication is working
-    if (!req.user || !req.user._id) {
+    if (!req.user || !req.user.id) {
+      console.log("Authenticated User:", req.user); // Debugging
       console.error("Authentication error: User not found.");
       return res.status(401).json({ message: "Unauthorized. Please log in." });
     }
@@ -50,9 +50,9 @@ router.post("/register", ensureAuth, async (req, res) => {
       theme,
       participantType,
       source,
-      termsAccepted,
+      // termsAccepted,
       members,
-      createdBy: req.user._id,
+      createdBy: req.user.id,
     });
 
     await newTeam.save();

@@ -7,7 +7,7 @@ const connectDB = require("./config/db");
 require("./config/passport");
 
 const authRoutes = require("./routes/auth");
-const teamRoutes = require("./Routes/teamRoutes");
+const teamRoutes = require("./routes/teamRoutes");
 
 const app = express();
 

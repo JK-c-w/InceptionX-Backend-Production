@@ -15,6 +15,8 @@ router.get(
   })
 );
 
+
+
 // Logout Route
 router.get("/logout", (req, res) => {
   req.logout((err) => {
@@ -26,6 +28,7 @@ router.get("/logout", (req, res) => {
 
 // Get Current User
 router.get("/user", (req, res) => {
+
   console.log("Authenticated User:", req.user); // Debugging
 
   if (req.isAuthenticated() && req.user) {
