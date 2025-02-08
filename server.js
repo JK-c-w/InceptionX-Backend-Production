@@ -18,6 +18,10 @@ app.use(
     credentials: true, // Allow cookies in requests
   })
 );
+
+
+
+
 app.use(express.json());
 
 //  Session Management

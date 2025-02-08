@@ -64,7 +64,7 @@ router.post("/signup", async (req, res) => {
       await user.save();
       console.log("Signup Successfully:", user);
       // Redirect to login page
-       return res.redirect("http://localhost:5173/login");
+      res.status(200).json({message:"Account Created "});;
    } catch(err){
      console.error(err);
      res.status(500).json({message:"Server Error"});
