@@ -17,7 +17,7 @@ const isProduction = process.env.NODE_ENV === "production";
 // Configure allowed CORS origins dynamically
 const allowedOrigins = isProduction
   ? [process.env.PROD_CLIENT_URL]
-  : [process.env.CLIENT_URL, "http://localhost:5173"];
+  : [process.env.CLIENT_URL];
 
 app.use(
   cors({
