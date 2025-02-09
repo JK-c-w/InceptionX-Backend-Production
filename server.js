@@ -55,3 +55,7 @@ connectDB()
     console.error("Failed to connect to DB:", err);
     process.exit(1);
   });
+  app.get("/", (req, res) => {
+    res.send("Backend is running 🚀");
+  });
+  
