@@ -10,7 +10,7 @@ const isProduction = process.env.NODE_ENV === "production";
 // 🌟 Get environment variables dynamically
 const CLIENT_URL = isProduction ? process.env.PROD_CLIENT_URL : process.env.CLIENT_URL || "http://localhost:5173";
 const SERVER_URL = isProduction ? process.env.PROD_SERVER_URL : process.env.SERVER_URL || "http://localhost:5000";
-const GITHUB_CALLBACK_URL = isProduction ? process.env.GITHUB_CALLBACK_URL : "http://localhost:5000/auth/github/callback";
+const GITHUB_CALLBACK_URL = process.env.GITHUB_CALLBACK_URL ;
 
 // GitHub Login Route
 router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
