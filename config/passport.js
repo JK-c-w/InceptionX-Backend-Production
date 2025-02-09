@@ -3,16 +3,14 @@ const GitHubStrategy = require("passport-github2").Strategy;
 const User = require("../models/User");
 
 const isProduction = process.env.NODE_ENV === "production";
-const githubCallbackURL = isProduction
-  ? process.env.GITHUB_CALLBACK_URL
-  : "http://localhost:5000/auth/github/callback";
+
 
 passport.use(
   new GitHubStrategy(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: githubCallbackURL,
+      callbackURL: process.env.GITHUB_CALLBACK_URL,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
