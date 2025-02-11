@@ -56,10 +56,12 @@ router.post("/signup", async (req, res) => {
       const salt =await bcrypt.genSalt(10);
       const hashedPassword=await bcrypt.hash(password,salt);
 
+      const username =email.split('@')[0];
       //Create new User 
       user=new EUser({
         email,
         password:hashedPassword,
+        username
       });
       await user.save();
       console.log("Signup Successfully:", user);
@@ -72,31 +74,24 @@ router.post("/signup", async (req, res) => {
 });
 
 //Email Login Route
-router.post("/login",async(req,res)=>{
-  const {email ,password}=req.body;
-  try{
-    //Check if user exists
-    let user=await EUser.findOne({email});
-    if(!user){
-      return res.status(401).json({message:"Invalid Credentials"});
+router.post("/login", (req, res, next) => {
+  console.log("entered")
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Server Error" });
     }
-    // Check password
-    const isMatch =await bcrypt.compare(password , user.password);
-    if(!isMatch){
-      return res.status(401).json({message:"Invalid Credentials"});
+    if (!user) {
+      return res.status(400).json({ message: "Invalid Credentials" });
     }
-    //Authenticate User
-    req.login(user,(err)=>{
-      if(err){
-        return res.status(401).json({message:"Invalid Credentials"});
+    req.logIn(user, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Server Error" });
       }
-      res.status(200).json({message:"Login succesfully"});
+      return res.status(200).json({ message: "Login Successfully" });
     });
-  }
-   catch(err){
-    console.error(err);
-    res.status(500).json({message:"Server Error"});
-  }
+  })(req, res, next);
 });
 
 // Logout Route

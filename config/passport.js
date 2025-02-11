@@ -1,7 +1,11 @@
 const passport = require("passport");
 const GitHubStrategy = require("passport-github2").Strategy;
 const User = require("../models/User");
+const EUser =require('../models/EmailUser');
+const LocalStrategy=require("passport-local").Strategy;
+const bcrypt =require("bcryptjs")
 
+//Git Strategy 
 passport.use(
   new GitHubStrategy(
     {
@@ -35,14 +39,44 @@ passport.use(
     }
   )
 );
+// Local Strategy for Email Login
+passport.use(
+  new LocalStrategy({ usernameField:"email"},async (email, password, done) => {
+    try {
+      console.log(email)
+      //Check if user exists
+      let user = await EUser.findOne({email});
+      if (!user) {
+        console.log("Invalid email")
+        return done(null, false, { message: "Invalid Credentials" });
+      }
+      // Check password
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        console.log("Invalid Pass")
+        return done(null, false, { message: "Invalid Credentials" });
+      }
+      console.log("Login Successfully:", user);
+      return done(null, user);
+    } 
+    catch (err) {
+      console.error(err);
+      return done(err);
+    }
+}));
 
 passport.serializeUser((user, done) => {
+  console.log("serializing user")
   done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
+  console.log("deserializing user",id)
   try {
-    const user = await User.findById(id);
+    let user = await User.findById(id);
+    if(!user) {
+       user=await EUser.findById(id);
+    }
     if (user) {
       done(null, {
         id: user.id,
