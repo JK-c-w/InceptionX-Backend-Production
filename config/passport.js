@@ -2,7 +2,7 @@ const passport = require("passport");
 const GitHubStrategy = require("passport-github2").Strategy;
 const User = require("../models/User");
 
-const isProduction = process.env.NODE_ENV === "production";
+
 
 
 passport.use(
