@@ -8,6 +8,14 @@ const Schema =new mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    username:{
+        type:"string"
+    },
+    avatar:{
+         type:"string",
+        default: "./avatar.png"
+    
     }
 })
 const EUsers=mongoose.model('EUsers',Schema);

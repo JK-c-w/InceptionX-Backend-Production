@@ -12,9 +12,10 @@ const teamRoutes = require("./routes/teamRoutes");
 const app = express();
 
 // Middleware
+// Middleware
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin:process.env.FRONTEND_URL||"http://localhost:5173",
     credentials: true, // Allow cookies in requests
   })
 );
@@ -22,8 +23,12 @@ app.use(
 
 
 
+
+
+
 app.use(express.json());
 
+//  Session Management
 //  Session Management
 app.use(
   session({
@@ -31,6 +36,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
+      secure: process.env.NODE_ENV === "production", // Enable in production with HTTPS
       secure: process.env.NODE_ENV === "production", // Enable in production with HTTPS
       httpOnly: true,
       sameSite: "lax",
@@ -55,6 +61,10 @@ connectDB()
     console.error("Failed to connect to DB:", err);
     process.exit(1);
   });
+  app.get("/", (req, res) => {
+    res.send("Backend is running 🚀");
+  });
+  
   app.get("/", (req, res) => {
     res.send("Backend is running 🚀");
   });
