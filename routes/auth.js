@@ -1,7 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
-const EUser=require("../models/EmailUser");
+const EUser = require("../models/EmailUser");
 const router = express.Router();
 
 // GitHub Login Route
@@ -16,50 +16,45 @@ router.get(
   })
 );
 
-//Email Signup Route
+// Email Signup Route
 router.post("/signup", async (req, res) => {
-  console.log(req.body);
-   try{
-       // getting data    
-       const {email ,password}=req.body;
+  // console.log(req.body);
+  try {
+    const { email, password } = req.body;
 
-        //  Check if `req.body` is missing
-        if (!req.body || Object.keys(req.body).length === 0) {
-        console.error(" Request body is empty!");
-       return res.status(400).json({ message: "Invalid request. No data received." });
-      }
+    if (!req.body || Object.keys(req.body).length === 0) {
+      console.error(" Request body is empty!");
+      return res.status(400).json({ message: "Invalid request. No data received." });
+    }
 
-      // Check if required fields are filled
-      if(!email || !password){
-        console.error(" Missing required fields:", req.body);
-        return res.status(400).json({ message: "All required fields must be filled correctly." });
-      }
+    if (!email || !password) {
+      console.error(" Missing required fields:", req.body);
+      return res.status(400).json({ message: "All required fields must be filled correctly." });
+    }
 
-      // check the length of password
-      if(password.length<6){
-        return res.status(400).json({message:"Password must be atleast 6 characters"});
-      }
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters." });
+    }
 
-      // check if the password containes a number , a special character and a uppercase letter
-      let regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
-      if(!password.match(regex)){
-          return res.status(400).json({message:"Password must contain a number , a special character and a uppercase letter"});
-        }
+    let regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    if (!password.match(regex)) {
+      return res.status(400).json({ message: "Password must contain a number, a special character, and an uppercase letter." });
+    }
 
-      // Check if user exists
-      let user = await EUser.findOne({email});
-      if(user){
-        return res.status(401).json({message:"User already exists"});
-      }
+    let user = await EUser.findOne({ email });
+    if (user) {
+      return res.status(401).json({ message: "User already exists" });
+    }
 
-      //Hash Password
-      const salt =await bcrypt.genSalt(10);
-      const hashedPassword=await bcrypt.hash(password,salt);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
+      const username =email.split('@')[0];
       //Create new User 
       user=new EUser({
         email,
         password:hashedPassword,
+        username
       });
       await user.save();
       console.log("Signup Successfully:", user);
@@ -72,31 +67,24 @@ router.post("/signup", async (req, res) => {
 });
 
 //Email Login Route
-router.post("/login",async(req,res)=>{
-  const {email ,password}=req.body;
-  try{
-    //Check if user exists
-    let user=await EUser.findOne({email});
-    if(!user){
-      return res.status(401).json({message:"Invalid Credentials"});
+router.post("/login", (req, res, next) => {
+  // console.log("entered")
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Server Error" });
     }
-    // Check password
-    const isMatch =await bcrypt.compare(password , user.password);
-    if(!isMatch){
-      return res.status(401).json({message:"Invalid Credentials"});
+    if (!user) {
+      return res.status(400).json({ message: "Invalid Credentials" });
     }
-    //Authenticate User
-    req.login(user,(err)=>{
-      if(err){
-        return res.status(401).json({message:"Invalid Credentials"});
+    req.logIn(user, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Server Error" });
       }
-      res.status(200).json({message:"Login succesfully"});
+      return res.status(200).json({ message: "Login Successfully" });
     });
-  }
-   catch(err){
-    console.error(err);
-    res.status(500).json({message:"Server Error"});
-  }
+  })(req, res, next);
 });
 
 // Logout Route
@@ -110,8 +98,7 @@ router.get("/logout", (req, res) => {
 
 // Get Current User
 router.get("/user", (req, res) => {
-
-  console.log("Authenticated User:", req.user); // Debugging
+  // console.log("Authenticated User:", req.user);
 
   if (req.isAuthenticated() && req.user) {
     res.json({
