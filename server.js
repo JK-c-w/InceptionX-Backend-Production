@@ -4,6 +4,7 @@ const passport = require("passport");
 const session = require("express-session");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const MongoStore =require('connect-mongo');
 require("./config/passport");
 
 const authRoutes = require("./routes/auth");
@@ -29,6 +30,10 @@ app.use(
     secret: process.env.SESSION_SECRET || "supersecretkey",
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: 'sessions'
+    }),
     cookie: {
       secure: process.env.NODE_ENV === "production", // Enable in production with HTTPS
       httpOnly: true,
