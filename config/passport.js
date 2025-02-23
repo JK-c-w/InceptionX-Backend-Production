@@ -66,12 +66,12 @@ passport.use(
 }));
 
 passport.serializeUser((user, done) => {
-  console.log("serializing user")
+  // console.log("serializing user")
   done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
-  console.log("deserializing user",id)
+  // console.log("deserializing user",id)
   try {
     let user = await User.findById(id);
     if(!user) {

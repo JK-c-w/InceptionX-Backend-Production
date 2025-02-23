@@ -89,10 +89,11 @@ router.post("/login", (req, res, next) => {
 
 // Logout Route
 router.get("/logout", (req, res) => {
+  console.log("loggout")
   req.logout((err) => {
     if (err) return res.status(500).json({ message: "Logout failed" });
     req.session = null;
-    res.redirect("http://localhost:5173");
+    //return res.redirect("http://localhost:5173");
   });
 });
 
