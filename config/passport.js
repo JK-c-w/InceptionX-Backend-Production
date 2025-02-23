@@ -11,7 +11,7 @@ passport.use(
     {
       clientID:"Ov23lidhJibghLtoBzFd",
       clientSecret:"9ecacb0bc4f58f9eecb8d2f2b2f0245f534654e2",
-      callbackURL: "http://localhost:5000/auth/github/callback"
+      callbackURL: "https://inceptionx-production.onrender.com/auth/github/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -56,7 +56,7 @@ passport.use(
         console.log("Invalid Pass")
         return done(null, false, { message: "Invalid Credentials" });
       }
-      console.log("Login Successfully:", user);
+      console.log("@Login Successfully :", user);
       return done(null, user);
     } 
     catch (err) {
@@ -66,7 +66,7 @@ passport.use(
 }));
 
 passport.serializeUser((user, done) => {
-  // console.log("serializing user")
+   console.log("serializing user")
   done(null, user._id);
 });
 
@@ -79,6 +79,7 @@ passport.deserializeUser(async (id, done) => {
     }
     if (user) {
       done(null, {
+        // Attach user details to req.user
         id: user.id,
         username: user.username,
         avatar: user.avatar,
