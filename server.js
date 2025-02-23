@@ -14,8 +14,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    // origin:process.env.FRONTEND_URL||"http://localhost:5173",
-    origin:process.env.PROD_CLIENT_URL||"https://inceptionx.vercel.app",
+    origin : process.env.NODE_ENV === "production" ? "https://inceptionx.vercel.app" : "http://localhost:5173",
     credentials: true, // Allow cookies in requests
   })
 );
@@ -30,7 +29,6 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // Enable in production with HTTPS
       secure: process.env.NODE_ENV === "production", // Enable in production with HTTPS
       httpOnly: true,
       sameSite: "lax",
