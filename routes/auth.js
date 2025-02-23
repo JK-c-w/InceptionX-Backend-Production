@@ -5,10 +5,10 @@ const EUser = require("../models/EmailUser");
 const router = express.Router();
 
 // GitHub Login Route
-router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
+router.post("/github", passport.authenticate("github", { scope: ["user:email"] }));
 
 // GitHub Callback Route
-router.get(
+router.post(
   "/github/callback",
   passport.authenticate("github", {
     failureRedirect: "http://localhost:5173/login-failed",
