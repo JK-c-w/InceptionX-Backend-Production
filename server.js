@@ -12,23 +12,17 @@ const teamRoutes = require("./routes/teamRoutes");
 const app = express();
 
 // Middleware
-// Middleware
 app.use(
   cors({
-    origin:process.env.FRONTEND_URL||"http://localhost:5173",
+    // origin:process.env.FRONTEND_URL||"http://localhost:5173",
+    origin:process.env.PROD_CLIENT_URL||"https://inceptionx.vercel.app",
     credentials: true, // Allow cookies in requests
   })
 );
 
 
-
-
-
-
-
 app.use(express.json());
 
-//  Session Management
 //  Session Management
 app.use(
   session({

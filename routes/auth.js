@@ -12,7 +12,8 @@ router.get(
   "/github/callback",
   passport.authenticate("github", {
     failureRedirect: "http://localhost:5173/login-failed",
-    successRedirect: "http://localhost:5173",
+    // successRedirect: "http://localhost:5173",
+    successRedirect:"https://inceptionx.vercel.app"
   })
 );
 
@@ -99,8 +100,7 @@ router.get("/logout", (req, res) => {
 
 // Get Current User
 router.get("/user", (req, res) => {
-  // console.log("Authenticated User:", req.user);
-
+   console.log("Authenticated User:", req.user);
   if (req.isAuthenticated() && req.user) {
     res.json({
       id: req.user.id,
