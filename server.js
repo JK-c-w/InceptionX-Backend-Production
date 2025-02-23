@@ -35,7 +35,7 @@ app.use(
       collectionName: 'sessions'
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production", // Enable in production with HTTPS
+      secure: true, // Enable in production with HTTPS
       httpOnly: true,
       sameSite: "lax",
     },
