@@ -58,7 +58,6 @@ passport.use(
       }
       console.log("@Login Successfully :", user);
       return done(null, user);
-      console.log("after login:",req.session);
     } 
     catch (err) {
       console.error(err);
