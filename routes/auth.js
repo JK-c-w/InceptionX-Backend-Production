@@ -101,11 +101,10 @@ router.get("/logout", (req, res) => {
 });
 
 // Get Current User
-router.get("/user", (req, res) => {
+router.post("/user", (req, res) => {
   console.log("Authenticated User:", req.session);
   if (req.isAuthenticated() && req.user) {
       res.json({
-
       id: req.user.id,
       username: req.user.username,
       avatar: req.user.avatar || "https://github.com/identicons/default.png", // Fallback avatar
