@@ -83,7 +83,9 @@ router.post("/login", (req, res, next) => {
         console.error(err);
         return res.status(500).json({ message: "Server Error" });
       }
+      console.log("Session:", req.session);
       return res.status(200).json({ message: "Login Successfully" });
+      
     });
   })(req, res, next);
 });
@@ -99,10 +101,11 @@ router.get("/logout", (req, res) => {
 });
 
 // Get Current User
-router.post("/user", (req, res) => {
-  console.log("Authenticated User:", req.user);
+router.get("/user", (req, res) => {
+  console.log("Authenticated User:", req.session);
   if (req.isAuthenticated() && req.user) {
       res.json({
+
       id: req.user.id,
       username: req.user.username,
       avatar: req.user.avatar || "https://github.com/identicons/default.png", // Fallback avatar

@@ -5,19 +5,21 @@ const session = require("express-session");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const MongoStore =require('connect-mongo');
+const cookieParser=require('cookie-parser');
 require("./config/passport");
 
 const authRoutes = require("./routes/auth");
 const teamRoutes = require("./routes/teamRoutes");
 
 const app = express();
-
+app.set('trust proxy', 1);
 // Middleware
 app.use(
   cors({
     // origin : process.env.NODE_ENV === "production" ? "https://inceptionx.vercel.app" : "http://localhost:5173",
     origin :"http://localhost:5173",
     credentials: true, // Allow cookies in requests
+    methods: ["GET", "POST"],
   })
 );
 
@@ -29,26 +31,24 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET || "supersecretkey",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,
       collectionName: 'sessions'
     }),
     cookie: {
-      secure: true, // Enable in production with HTTPS
+       secure: process.env.NODE_ENV === "production", // Enable in production with HTTPS
       httpOnly: true,
-      sameSite: "lax",
+       sameSite: "lax",
     },
   })
 );
 
+
+// Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
-  console.log("Session before login:", req.session);
-  next();
-});
 
 // Routes
 app.use("/auth", authRoutes);
