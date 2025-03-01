@@ -3,7 +3,6 @@ const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const EUser = require("../models/EmailUser");
 const router = express.Router();
-const jwt =require('jsonwebtoken');
 
 // GitHub Login Route
 router.post("/github", passport.authenticate("github", { scope: ["user:email"] }));
@@ -70,26 +69,18 @@ router.post("/signup", async (req, res) => {
 
 //Email Login Route
 router.post("/login", (req, res, next) => {
-  // console.log("entered")
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Server Error" });
-    }
-    if (!user) {
-      return res.status(400).json({ message: "Invalid Credentials" });
-    }
+  // console.log("Login Request:",req.body);
+  passport.authenticate("local", async (err, user, info) => {
+    if (err) return res.status(500).json({ message: "Server Error" });
+    if (!user) return res.status(400).json({ message: info.message });
+
     req.logIn(user, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Server Error" });
-      }
-      console.log("Session:", req.session);
-      return res.status(200).json({ message: "Login Successfully" });
-      
+      if (err) return res.status(500).json({ message: "Server Error" });
+      return res.status(200).json({ message: "Login successful" });
     });
   })(req, res, next);
-});
+}
+);
 
 // Logout Route
 router.get("/logout", (req, res) => {

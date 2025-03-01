@@ -43,7 +43,7 @@ passport.use(
 passport.use(
   new LocalStrategy({ usernameField:"email"},async (email, password, done) => {
     try {
-      console.log(email)
+      console.log(email ,password) 
       //Check if user exists
       let user = await EUser.findOne({email});
       if (!user) {
