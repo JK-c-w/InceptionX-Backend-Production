@@ -101,7 +101,7 @@ router.get("/logout", (req, res) => {
 });
 
 // Get Current User
-router.post("/user", (req, res) => {
+router.get("/user", (req, res) => {
   console.log("Authenticated User:", req.session);
   if (req.isAuthenticated() && req.user) {
       res.json({
