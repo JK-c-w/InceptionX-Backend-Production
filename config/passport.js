@@ -1,96 +1,54 @@
+// 
+
 const passport = require("passport");
-const GitHubStrategy = require("passport-github2").Strategy;
+const LocalStrategy = require("passport-local").Strategy;
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-const EUser =require('../models/EmailUser');
-const LocalStrategy=require("passport-local").Strategy;
-const bcrypt =require("bcryptjs")
+const EUser = require("../models/EmailUser");
 
-//Git Strategy 
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET || "supersecretkey",
+};
+
+// JWT Strategy
 passport.use(
-  new GitHubStrategy(
-    {
-      clientID:"Ov23lidhJibghLtoBzFd",
-      clientSecret:"9ecacb0bc4f58f9eecb8d2f2b2f0245f534654e2",
-      callbackURL: "https://inceptionx-production.onrender.com/auth/github/callback"
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        console.log(" GitHub Profile:", profile);
-
-        let user = await User.findOne({ githubId: profile.id });
-
-        if (!user) {
-          user = new User({
-            githubId: profile.id,
-            username: profile.username || profile.displayName || "Unknown",
-            avatar: profile.photos?.[0]?.value || "https://github.com/identicons/default.png",
-          });
-          await user.save();
-          console.log("New user registered:", user);
-        } else {
-          console.log(" Existing user found:", user);
-        }
-
-        return done(null, user);
-      } catch (err) {
-        console.error(" Error in GitHub Strategy:", err);
-        return done(err, null);
+  new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
+    try {
+      let user = await User.findById(jwt_payload.id);
+      if (!user) {
+        user = await EUser.findById(jwt_payload.id);
       }
+      if (user) {
+        return done(null, user);
+      } else {
+        return done(null, false);
+      }
+    } catch (err) {
+      return done(err, false);
     }
-  )
+  })
 );
+
 // Local Strategy for Email Login
 passport.use(
-  new LocalStrategy({ usernameField:"email"},async (email, password, done) => {
+  new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
     try {
-      console.log(email)
-      //Check if user exists
-      let user = await EUser.findOne({email});
+      let user = await EUser.findOne({ email });
       if (!user) {
-        console.log("Invalid email")
         return done(null, false, { message: "Invalid Credentials" });
       }
-      // Check password
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        console.log("Invalid Pass")
         return done(null, false, { message: "Invalid Credentials" });
       }
-      console.log("@Login Successfully :", user);
       return done(null, user);
-    } 
-    catch (err) {
-      console.error(err);
+    } catch (err) {
       return done(err);
     }
-}));
+  })
+);
 
-passport.serializeUser((user, done) => {
-    console.log("serializing user",user)
-    done(null, user._id);
-    console.log("UserID:",user._id);
-});
-
-passport.deserializeUser(async (id, done) => {
-   console.log("deserializing user",id)
-  try {
-    let user = await User.findById(id);
-    if(!user) {
-       user=await EUser.findById(id);
-    }
-    if (user) {
-      done(null, {
-        // Attach user details to req.user
-        id: user.id,
-        username: user.username,
-        avatar: user.avatar,
-      });
-    } else {
-      console.warn(" User not found during deserialization");
-      done(null, null);
-    }
-  } catch (err) {
-    console.error(" Error deserializing user:", err);
-    done(err, null);
-  }
-});
+module.exports = passport;
