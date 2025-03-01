@@ -3,6 +3,7 @@ const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const EUser = require("../models/EmailUser");
 const router = express.Router();
+const jwt =require('jsonwebtoken');
 
 // GitHub Login Route
 router.post("/github", passport.authenticate("github", { scope: ["user:email"] }));
@@ -110,6 +111,7 @@ router.post("/user", (req, res) => {
       avatar: req.user.avatar || "https://github.com/identicons/default.png", // Fallback avatar
     });
   } else {
+    console.log(req.user);
     res.status(401).json({ message: "Not authenticated" });
   }
 });
