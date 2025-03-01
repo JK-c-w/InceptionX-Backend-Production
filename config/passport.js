@@ -1,118 +1,94 @@
-const express = require("express");
-const passport = require("passport");
-const bcrypt = require("bcryptjs");
-const EUser = require("../models/EmailUser");
-const router = express.Router();
-const jwt = require('jsonwebtoken');
+const passport=require("passport");
+const GitHubStrategy = require("passport-github2").Strategy;
+const User = require("../models/User");
+const EUser =require('../models/EmailUser');
+const LocalStrategy=require("passport-local").Strategy;
+const bcrypt =require("bcryptjs")
 
-// GitHub Login Route
-router.post("/github", passport.authenticate("github", { scope: ["user:email"] }));
+//Git Strategy 
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID:"Ov23lidhJibghLtoBzFd",
+      clientSecret:"9ecacb0bc4f58f9eecb8d2f2b2f0245f534654e2",
+      callbackURL: "http://localhost:5000/auth/github/callback"
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        console.log(" GitHub Profile:", profile);
 
-// GitHub Callback Route
-router.post(
-  "/github/callback",
-  passport.authenticate("github", {
-    failureRedirect: "http://localhost:5173/login-failed",
-    successRedirect: "http://localhost:5173",
-    // successRedirect:"https://inceptionx.vercel.app"
-  })
+        let user = await User.findOne({ githubId: profile.id });
+
+        if (!user) {
+          user = new User({
+            githubId: profile.id,
+            username: profile.username || profile.displayName || "Unknown",
+            avatar: profile.photos?.[0]?.value || "https://github.com/identicons/default.png",
+          });
+          await user.save();
+          console.log("New user registered:", user);
+        } else {
+          console.log(" Existing user found:", user);
+        }
+
+        return done(null, user);
+      } catch (err) {
+        console.error(" Error in GitHub Strategy:", err);
+        return done(err, null);
+      }
+    }
+  )
 );
-
-// Email Signup Route
-router.post("/signup", async (req, res) => {
-  // console.log(req.body);
-  try {
-    const { email, password } = req.body;
-
-    if (!req.body || Object.keys(req.body).length === 0) {
-      console.error(" Request body is empty!");
-      return res.status(400).json({ message: "Invalid request. No data received." });
-    }
-
-    if (!email || !password) {
-      console.error(" Missing required fields:", req.body);
-      return res.status(400).json({ message: "All required fields must be filled correctly." });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters." });
-    }
-
-    let regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
-    if (!password.match(regex)) {
-      return res.status(400).json({ message: "Password must contain a number, a special character, and an uppercase letter." });
-    }
-
-    let user = await EUser.findOne({ email });
-    if (user) {
-      return res.status(401).json({ message: "User already exists" });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const username = email.split('@')[0];
-    // Create new User
-    user = new EUser({
-      email,
-      password: hashedPassword,
-      username
-    });
-    await user.save();
-    console.log("Signup Successfully:", user);
-    // Redirect to login page
-    res.status(200).json({ message: "Account Created " });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-// Email Login Route
-router.post("/login", (req, res, next) => {
-  // console.log("entered")
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Server Error" });
-    }
-    if (!user) {
-      return res.status(400).json({ message: "Invalid Credentials" });
-    }
-    req.logIn(user, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Server Error" });
+// Local Strategy for Email Login
+passport.use(
+  new LocalStrategy({ usernameField:"email"},async (email, password, done) => {
+    try {
+      console.log(email)
+      //Check if user exists
+      let user = await EUser.findOne({email});
+      if (!user) {
+        console.log("Invalid email")
+        return done(null, false, { message: "Invalid Credentials" });
+      }
+      // Check password
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        console.log("Invalid Pass")
+        return done(null, false, { message: "Invalid Credentials" });
       }
       console.log("Login Successfully:", user);
-      console.log("Session after login:", req.session); // Log the session details
-      return res.status(200).json({ message: "Login Successfully" });
-    });
-  })(req, res, next);
+      return done(null, user);
+    } 
+    catch (err) {
+      console.error(err);
+      return done(err);
+    }
+}));
+
+passport.serializeUser((user, done) => {
+   console.log("serializing user",user._id);
+  done(null,user._id);
 });
 
-// Logout Route
-router.get("/logout", (req, res) => {
-  console.log("loggout")
-  req.logout((err) => {
-    if (err) return res.status(500).json({ message: "Logout failed" });
-    req.session = null;
-    // return res.redirect("http://localhost:5173");
-  });
-});
-
-// Get Current User
-router.post("/user", (req, res) => {
-  console.log("Authenticated User:", req.session);
-  if (req.isAuthenticated() && req.user) {
-    res.json({
-      id: req.user.id,
-      username: req.user.username,
-      avatar: req.user.avatar || "https://github.com/identicons/default.png", // Fallback avatar
-    });
-  } else {
-    res.status(401).json({ message: "Not authenticated" });
+passport.deserializeUser(async (id, done) => {
+  console.log("deserializing user",id)
+  try {
+    let user = await User.findById(id);
+    if(!user) {
+       user=await EUser.findById(id);
+    }
+    if (user) {
+      done(null, {
+        id: user.id,
+        username: user.username,
+        avatar: user.avatar,
+      });
+    } else {
+      console.warn(" User not found during deserialization");
+      done(null, null);
+    }
+  } catch (err) {
+    console.error(" Error deserializing user:", err);
+    done(err, null);
   }
 });
-
-module.exports = router;
