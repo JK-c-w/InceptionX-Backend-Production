@@ -20,7 +20,7 @@ router.get(
     }
     const token=genrateToken(payload);
     // res.redirect(`https://inceptionx.vercel.app?token=${token}`);
-    res.redirect(`http://localhost:5173?token=${token}`);
+    res.redirect(`http://localhost:5173/login/?token=${token}`);
 
   }
 );
