@@ -12,7 +12,7 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 // GitHub Callback Route
 router.get(
   "/github/callback",
-  passport.authenticate("github", {session:false,failureRedirect:"http://localhost:5173/login-failed"}),
+  passport.authenticate("github", {session:false,failureRedirect:"https://inceptionx.vercel.app/login-failed"}),
   (req,res)=>{
     const payload={
       id:req.user.id,
@@ -106,7 +106,7 @@ router.post("/login", (req, res, next) => {
 
 // Logout Route
 router.get("/logout", (req, res) => {
-  console.log("loggout")
+  console.log("logout")
   req.logout((err) => {
     if (err) return res.status(500).json({ message: "Logout failed" });
     req.session = null;
