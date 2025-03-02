@@ -37,7 +37,7 @@ app.use(
     cookie: {
        secure:true, // Enable in production with HTTPS
        httpOnly:true,
-       sameSite: "lax",
+       sameSite: "none",
        maxAge: 1000 * 60 * 60 * 24,
     },
   })
