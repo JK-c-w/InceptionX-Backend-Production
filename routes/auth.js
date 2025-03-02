@@ -19,8 +19,8 @@ router.get(
       username:req.user.username
     }
     const token=genrateToken(payload);
-    // res.redirect(`https://inceptionx.vercel.app/login/?token=${token}`);
-    res.redirect(`http://localhost:5173/login/?token=${token}`);
+     res.redirect(`https://inceptionx.vercel.app/login/?token=${token}`);
+    // res.redirect(`http://localhost:5173/login/?token=${token}`);
   }
 );
 
