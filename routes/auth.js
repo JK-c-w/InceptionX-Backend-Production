@@ -10,7 +10,7 @@ const router = express.Router();
 router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
 
 // GitHub Callback Route
-router.post(
+router.get(
   "/github/callback",
   passport.authenticate("github", {
     failureRedirect: "http://localhost:5173/login-failed",
