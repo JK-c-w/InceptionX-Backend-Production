@@ -5,6 +5,7 @@ const jwtAuthMiddleware=(req,res,next)=>{
     const authorization=req.headers.authorization;
     if(!authorization) {
         if(req.user){
+            console.log(req.user)
             return next();
         }
         return res.status(401).json({message:"Token is not Found"})
