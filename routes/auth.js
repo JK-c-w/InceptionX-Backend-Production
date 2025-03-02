@@ -2,7 +2,9 @@ const express = require("express");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const EUser = require("../models/EmailUser");
+const {jwtAuthMiddleware,genrateToken}=require("../config/jwt")
 const router = express.Router();
+
 
 // GitHub Login Route
 router.post("/github", passport.authenticate("github", { scope: ["user:email"] }));
@@ -57,10 +59,18 @@ router.post("/signup", async (req, res) => {
         password:hashedPassword,
         username
       });
-      await user.save();
+      const response= await user.save();
       console.log("Signup Successfully:", user);
+
+       const payload={
+            id:response.id,
+            username:response.username
+       }
+      console.log("payload :",payload);
+      const token=genrateToken(payload);
+      console.log("Token is :",token)
       // Redirect to login page
-      res.status(200).json({message:"Account Created "});;
+      res.status(200).json({message:"Account Created ",Token:token});
    } catch(err){
      console.error(err);
      res.status(500).json({message:"Server Error"});
@@ -73,11 +83,18 @@ router.post("/login", (req, res, next) => {
   passport.authenticate("local", async (err, user, info) => {
     if (err) return res.status(500).json({ message: "Server Error" });
     if (!user) return res.status(400).json({ message: info.message });
+    
+    const payload={
+      id:user.id,
+      username:user.username
+    }
+    const token = genrateToken(payload);
+    return res.status(200).json({message: "Login succesful",Token:token});
 
-    req.logIn(user, (err) => {
-      if (err) return res.status(500).json({ message: "Server Error" });
-      return res.status(200).json({ message: "Login successful" });
-    });
+    // req.logIn(user, (err) => {
+    //   if (err) return res.status(500).json({ message: "Server Error" });
+    //   return res.status(200).json({ message: "Login successful" });
+    // });
   })(req, res, next);
 }
 );
@@ -93,8 +110,8 @@ router.get("/logout", (req, res) => {
 });
 
 // Get Current User
-router.get("/user", (req, res) => {
-  console.log("Authenticated User:", req.session);
+router.get("/user",jwtAuthMiddleware,(req, res) => {
+  console.log("Authenticated User:", req.user);
   if (req.isAuthenticated() && req.user) {
       res.json({
       id: req.user.id,

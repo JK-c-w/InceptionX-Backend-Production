@@ -56,6 +56,7 @@ passport.use(
         console.log("Invalid Pass")
         return done(null, false, { message: "Invalid Credentials" });
       }
+      
       console.log("Login Successfully:", user);
       return done(null, user);
     } 
@@ -66,8 +67,8 @@ passport.use(
 }));
 
 passport.serializeUser((user, done) => {
-   console.log("serializing user",user._id);
-  done(null,user._id);
+   console.log("serializing user",user.id);
+  done(null,user.id);
 });
 
 passport.deserializeUser(async (id, done) => {
