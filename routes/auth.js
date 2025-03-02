@@ -13,17 +13,16 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 router.get(
   "/github/callback",
   passport.authenticate("github", {session:false,
-    failureRedirect:"https://inceptionx.vercel.app/login-failed",
-    successRedirect:"https://inceptionx.vercel.app"}),
-  // (req,res)=>{
-  //   const payload={
-  //     id:req.user.id,
-  //     username:req.user.username
-  //   }
-  //   const token=genrateToken(payload);
-    //  res.redirect(`https://inceptionx.vercel.app/login?token=${token}`);
-    //  res.redirect(`http://localhost:5173/login/?token=${token}`);
-  // }
+    failureRedirect:"https://inceptionx.vercel.app/login-failed",}),
+  (req,res)=>{
+    const payload={
+      id:req.user.id,
+      username:req.user.username
+    }
+    const token=genrateToken(payload);
+     res.redirect(`https://inceptionx.vercel.app/login?token=${token}`);
+     res.redirect(`http://localhost:5173/login/?token=${token}`);
+  }
 );
 
 // Email Signup Route
