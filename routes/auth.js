@@ -20,8 +20,8 @@ router.get(
       username:req.user.username
     }
     const token=genrateToken(payload);
-    //  res.redirect(`https://inceptionx.vercel.app/login?token=${token}`);
-      res.redirect(`http://localhost:5173/login/?token=${token}`);
+     res.redirect(`https://inceptionx.vercel.app/login?token=${token}`);
+      //res.redirect(`http://localhost:5173/login/?token=${token}`);
   }
 );
 
@@ -122,7 +122,7 @@ router.get("/user",jwtAuthMiddleware,(req, res) => {
       res.json({
       id: req.user.id,
       username: req.user.username,
-      avatar: req.user.avatar || "https://github.com/identicons/default.png", // Fallback avatar
+      avatar: req.user.avatar //|| "https://github.com/identicons/default.png", // Fallback avatar
     });
   } else {
     console.log(req.user);
