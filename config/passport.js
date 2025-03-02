@@ -10,7 +10,7 @@ passport.use(
   new GitHubStrategy(
     {
       clientID:"Ov23lidhJibghLtoBzFd",
-      clientSecret:"9ecacb0bc4f58f9eecb8d2f2b2f0245f534654e2",
+       clientSecret:"9ecacb0bc4f58f9eecb8d2f2b2f0245f534654e2",
       callbackURL:"https://inceptionx-production.onrender.com/auth/github/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
