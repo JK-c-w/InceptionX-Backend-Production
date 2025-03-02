@@ -15,7 +15,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log(" GitHub Profile:", profile);
+        console.log(" GitHub Profile:", profile.displayName);
 
         let user = await User.findOne({ githubId: profile.id });
 
@@ -30,7 +30,6 @@ passport.use(
         } else {
           console.log(" Existing user found:", user);
         }
-
         return done(null, user);
       } catch (err) {
         console.error(" Error in GitHub Strategy:", err);
