@@ -14,7 +14,7 @@ const Schema =new mongoose.Schema({
     },
     avatar:{
          type:"string",
-        default: "./avatar.png"
+        default: "/avatar.png"
     
     }
 })

@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 // GitHub Login Route
-router.post("/github", passport.authenticate("github", { scope: ["user:email"] }));
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
 
 // GitHub Callback Route
 router.post(

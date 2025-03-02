@@ -16,8 +16,8 @@ app.set('trust proxy', 1);
 // Middleware
 app.use(
   cors({
-    // origin : process.env.NODE_ENV === "production" ? "https://inceptionx.vercel.app" : "http://localhost:5173",
-    origin :"http://localhost:5173",
+     origin : process.env.NODE_ENV === "production" ? "https://inceptionx.vercel.app" : "http://localhost:5173",
+    // origin :"http://localhost:5173",
     credentials: true, // Allow cookies in requests
   })
 );
