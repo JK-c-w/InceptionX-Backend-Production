@@ -11,7 +11,6 @@ passport.use(
     {
       clientID:"Ov23lidhJibghLtoBzFd",
       clientSecret:"9ecacb0bc4f58f9eecb8d2f2b2f0245f534654e2",
-      // callbackURL: "http://localhost:5000/auth/github/callback"
       callbackURL:"https://inceptionx-production.onrender.com/auth/github/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
