@@ -7,16 +7,22 @@ const router = express.Router();
 
 
 // GitHub Login Route
-router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }),);
 
 // GitHub Callback Route
 router.get(
   "/github/callback",
-  passport.authenticate("github", {
-    failureRedirect: "http://localhost:5173/login-failed",
-     successRedirect: "http://localhost:5173",
-    // successRedirect:"https://inceptionx.vercel.app"
-  })
+  passport.authenticate("github", {session:false,failureRedirect:"http://localhost:5173/login-failed"}),
+  (req,res)=>{
+    const payload={
+      id:req.user.id,
+      username:req.user.username
+    }
+    const token=genrateToken(payload);
+    // res.redirect(`https://inceptionx.vercel.app?token=${token}`);
+    res.redirect(`http://localhost:5173?token=${token}`);
+
+  }
 );
 
 // Email Signup Route
