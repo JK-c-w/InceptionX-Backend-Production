@@ -112,6 +112,8 @@ router.get("/logout", (req, res) => {
 // Get Current User
 router.get("/user",(req, res) => {
   if (req.isAuthenticated()) {
+     console.log("User is Authenticated:",req.user);
+    return
       res.json({
       id: req.user.id,
       username: req.user.username,
@@ -122,6 +124,7 @@ router.get("/user",(req, res) => {
   }
 },(req,res)=>{
    if(req.user){
+    console.log("User is JAuthenticated:",req.user);
      res.json({
       id: req.user.id,
       username:req.user.username,
