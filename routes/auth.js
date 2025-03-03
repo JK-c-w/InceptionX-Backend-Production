@@ -113,11 +113,10 @@ router.get("/logout", (req, res) => {
 router.get("/user",(req, res) => {
   if (req.isAuthenticated()) {
      console.log("User is Authenticated:",req.user);
-    return
       res.json({
       id: req.user.id,
       username: req.user.username,
-      avatar: req.user.avatar //|| "https://github.com/identicons/default.png", // Fallback avatar
+      avatar: req.user.avatar || "https://github.com/identicons/default.png", // Fallback avatar
     });
   } else {
       jwtAuthMiddleware(req,res,next);
