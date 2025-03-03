@@ -17,7 +17,7 @@ app.set('trust proxy', 1);
 app.use(
   cors({
     // origin: "https://inceptionx.vercel.app", // Production link
-    origin:"http://localhost:5173", // Development link
+    // origin:"http://localhost:5173", // Development link
     credentials: true, // Allow cookies in requests
   })
 );
