@@ -15,13 +15,7 @@ router.get(
   passport.authenticate("github", {session:false,
     failureRedirect:"https://inceptionx.vercel.app/login-failed",}),
   (req,res)=>{
-    const payload={
-      id:req.user.id,
-      username:req.user.username
-    }
-    const token=genrateToken(payload);
-     res.redirect(`https://inceptionx.vercel.app/login?token=${token}`);
-      //res.redirect(`http://localhost:5173/login/?token=${token}`);
+    res.redirect("https://inceptionx.vercel.app");
   }
 );
 
@@ -116,18 +110,26 @@ router.get("/logout", (req, res) => {
 });
 
 // Get Current User
-router.get("/user",jwtAuthMiddleware,(req, res) => {
-  console.log("Authenticated User:", req.user);
-  if (req.isAuthenticated() && req.user) {
+router.get("/user",(req, res) => {
+  if (req.isAuthenticated()) {
       res.json({
       id: req.user.id,
       username: req.user.username,
       avatar: req.user.avatar //|| "https://github.com/identicons/default.png", // Fallback avatar
     });
   } else {
-    console.log(req.user);
-    res.status(401).json({ message: "Not authenticated" });
+      jwtAuthMiddleware(req,res,next);
   }
+},(req,res)=>{
+   if(req.user){
+     res.json({
+      id: req.user.id,
+      username:req.user.username,
+      avtar:req.user.avtar || "https://github.com/identicons/default.png"
+     })
+   } else{
+     res.status(401).json({message:"Not Authorized"});
+   }
 });
 
 module.exports = router;
