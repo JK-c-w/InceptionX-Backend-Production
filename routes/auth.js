@@ -12,7 +12,7 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 // GitHub Callback Route
 router.get(
   "/github/callback",
-  passport.authenticate("github", {session:false,
+  passport.authenticate("github", {
     failureRedirect:"https://inceptionx.vercel.app/login-failed",}),
   (req,res)=>{
     res.redirect("https://inceptionx.vercel.app");
