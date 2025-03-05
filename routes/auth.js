@@ -12,7 +12,7 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 // GitHub Callback Route
 router.get(
   "/github/callback",
-  passport.authenticate("github", {
+  passport.authenticate("github", {session:false,
     failureRedirect:"https://inceptionx.vercel.app/login-failed",}),
   (req,res)=>{
     res.redirect("https://inceptionx.vercel.app");
@@ -110,28 +110,17 @@ router.get("/logout", (req, res) => {
 });
 
 // Get Current User
-router.get("/user",(req, res) => {
-  if (req.isAuthenticated()) {
-     console.log("User is Authenticated:",req.user);
+router.get("/user",jwtAuthMiddleware,(req, res) => {
+  if (req.user) {
       res.json({
       id: req.user.id,
       username: req.user.username,
-      avatar: req.user.avatar || "https://github.com/identicons/default.png", // Fallback avatar
+      avatar: req.user.avatar //|| "https://github.com/identicons/default.png", // Fallback avatar
     });
-  } else {
-      jwtAuthMiddleware(req,res,next);
+  }else {
+    console.log("Unauthorized access",req.user);
+    res.status(401).json({ message: "Unauthorized access" });
   }
-},(req,res)=>{
-   if(req.user){
-    console.log("User is JAuthenticated:",req.user);
-     res.json({
-      id: req.user.id,
-      username:req.user.username,
-      avtar:req.user.avtar || "https://github.com/identicons/default.png"
-     })
-   } else{
-     res.status(401).json({message:"Not Authorized"});
-   }
 });
 
 module.exports = router;
