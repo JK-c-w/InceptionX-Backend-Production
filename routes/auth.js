@@ -20,6 +20,7 @@ router.get(
        username:req.user.username,
     }
     const token = genrateToken(payload);
+    console.log("Token is :",token)
     res.cookie("access_token",token,{httpOnly:true});
     res.redirect("https://inceptionx.vercel.app");
   }
