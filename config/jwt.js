@@ -2,7 +2,7 @@ const jwt= require('jsonwebtoken');
 
 const jwtAuthMiddleware=(req,res,next)=>{
      console.log("entering")
-    const authorization=req.headers.authorization;
+    const authorization=req.cookies.access_token;
     if(!authorization) return res.status(401).json({message:"Token is not provided"});
 
     //Extract the jwt token 

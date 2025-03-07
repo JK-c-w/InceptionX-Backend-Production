@@ -12,9 +12,15 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 // GitHub Callback Route
 router.get(
   "/github/callback",
-  passport.authenticate("github", {session:false,
+  passport.authenticate("github", {session:true,
     failureRedirect:"https://inceptionx.vercel.app/login-failed",}),
   (req,res)=>{
+    const payload ={
+       id:req.user.id,
+       username:req.user.username,
+    }
+    const token = genrateToken(payload);
+    res.cookie("access_token",token,{httpOnly:true});
     res.redirect("https://inceptionx.vercel.app");
   }
 );
@@ -115,12 +121,14 @@ router.get("/user",jwtAuthMiddleware,(req, res) => {
       res.json({
       id: req.user.id,
       username: req.user.username,
-      avatar: req.user.avatar //|| "https://github.com/identicons/default.png", // Fallback avatar
+      avatar: req.user.avatar || "https://github.com/identicons/default.png", // Fallback avatar
     });
   }else {
     console.log("Unauthorized access",req.user);
     res.status(401).json({ message: "Unauthorized access" });
   }
 });
+
+
 
 module.exports = router;

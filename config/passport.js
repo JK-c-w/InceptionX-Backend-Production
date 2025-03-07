@@ -3,7 +3,8 @@ const GitHubStrategy = require("passport-github2").Strategy;
 const User = require("../models/User");
 const EUser =require('../models/EmailUser');
 const LocalStrategy=require("passport-local").Strategy;
-const bcrypt =require("bcryptjs")
+const bcrypt =require("bcryptjs");
+const jwt=require("jsonwebtoken")
 
 //Git Strategy 
 passport.use(
@@ -30,14 +31,12 @@ passport.use(
         } else {
           console.log(" Existing user found:", user);
         }
-        return done(null, user);
       } catch (err) {
         console.error(" Error in GitHub Strategy:", err);
         return done(err, null);
       }
-    }
-  )
-);
+    } 
+));
 // Local Strategy for Email Login
 passport.use(
   new LocalStrategy({ usernameField:"email"},async (email, password, done) => {

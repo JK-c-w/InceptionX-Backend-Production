@@ -43,7 +43,7 @@ app.use(
   })
 );
 
-
+app.use(cookieParser())
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
