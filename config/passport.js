@@ -31,6 +31,7 @@ passport.use(
         } else {
           console.log(" Existing user found:", user);
         }
+        return done(null, user);
       } catch (err) {
         console.error(" Error in GitHub Strategy:", err);
         return done(err, null);
