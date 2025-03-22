@@ -6,6 +6,31 @@ const {jwtAuthMiddleware,genrateToken}=require("../config/jwt")
 const router = express.Router();
 
 
+// Google Login Route
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+// Google Callback Route 
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login-failed", session: true }),
+  (req, res) => {
+    // Generate a JWT token if needed
+    const payload = {
+      id: req.user.id,
+      username: req.user.username,
+    };
+    const token = generateToken(payload);
+
+    // Optionally set the token in a cookie
+    res.cookie("access_token", token, { httpOnly: true });
+
+    // Redirect to the frontend or dashboard
+    res.redirect("http://localhost:3000/dashboard"); // Replace with your frontend URL
+  }
+);
+
+
+
 // GitHub Login Route
 router.get("/github", passport.authenticate("github", { scope: ["user:email"] }),);
 

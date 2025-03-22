@@ -4,7 +4,37 @@ const User = require("../models/User");
 const EUser =require('../models/EmailUser');
 const LocalStrategy=require("passport-local").Strategy;
 const bcrypt =require("bcryptjs");
-const jwt=require("jsonwebtoken")
+const jwt=require("jsonwebtoken") ;
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+
+// Goggle Strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID, // Add this to your .env file
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Add this to your .env file
+      callbackURL: "https://inceptionx-production.onrender.com/auth/google/callback", // Replace with your callback URL
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // Find or create user in your database
+        let user = await User.findOne({ googleId: profile.id });
+        if (!user) {
+          user = new User({
+            googleId: profile.id,
+            username: profile.displayName,
+            email: profile.emails[0].value,
+            avatar: profile.photos[0].value || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+          });
+          await user.save();
+        }
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
+      }
+    }
+  )
+);
 
 //Git Strategy 
 passport.use(
