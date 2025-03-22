@@ -13,7 +13,7 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login-failed", session: true }),
-  (req, res) => {
+  (req, res,next) => {
     // Generate a JWT token if needed
     const payload = {
       id: req.user.id,
@@ -21,12 +21,7 @@ router.get(
     };
     const token = genrateToken(payload);
     console.log("Token is :",token)
-
-    // Optionally set the token in a cookie
-    res.cookie("access_token", token, { httpOnly: true });
-
-    // Redirect to the frontend or dashboard
-    res.redirect("https://inceptionx.vercel.app/"); // Replace with your frontend URL
+    return res.status(200).json({message: "Login succesful",Token:token});
   }
 );
 
