@@ -19,7 +19,8 @@ router.get(
       id: req.user.id,
       username: req.user.username,
     };
-    const token = generateToken(payload);
+    const token = genrateToken(payload);
+    console.log("Token is :",token)
 
     // Optionally set the token in a cookie
     res.cookie("access_token", token, { httpOnly: true });
