@@ -1,5 +1,5 @@
 const passport=require("passport");
-const GitHubStrategy = require("passport-github2").Strategy;
+
 const User = require("../models/User");
 const EUser =require('../models/EmailUser');
 const LocalStrategy=require("passport-local").Strategy;
