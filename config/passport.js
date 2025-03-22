@@ -27,6 +27,9 @@ passport.use(
             avatar: profile.photos?.[0]?.value || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
           });
           await user.save();
+          console.log("New user registered:", user);
+        }else {
+          console.log(" Existing user found:", user);
         }
         return done(null, user);
       } catch (err) {
