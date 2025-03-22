@@ -14,8 +14,8 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { 
     failureRedirect: "/login-failed", 
-    // successRedirect: "https://inceptionx.vercel.app",
-    successRedirect:"http://localhost:5173",
+     successRedirect: "https://inceptionx.vercel.app",
+    // successRedirect:"http://localhost:5173",
     session: true }),
 );
 
@@ -102,13 +102,6 @@ router.post("/login", (req, res, next) => {
   passport.authenticate("local", async (err, user, info) => {
     if (err) return res.status(500).json({ message: "Server Error" });
     if (!user) return res.status(400).json({ message: info.message });
-    
-    // const payload={
-    //   id:user.id,
-    //   username:user.username
-    // }
-    // const token = genrateToken(payload);
-    // return res.status(200).json({message: "Login succesful",Token:token});
 
     req.logIn(user, (err) => {
       if (err) return res.status(500).json({ message: "Server Error" });

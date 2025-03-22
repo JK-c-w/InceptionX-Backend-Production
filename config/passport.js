@@ -24,7 +24,7 @@ passport.use(
             googleId: profile.id,
             username: profile.displayName,
             email: profile.emails[0].value,
-            avatar: profile.photos[0].value || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+            avatar: profile.photos?.[0]?.value || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
           });
           await user.save();
         }
