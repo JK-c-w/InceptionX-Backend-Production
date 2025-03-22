@@ -21,7 +21,7 @@ router.get(
     };
     const token = genrateToken(payload);
     console.log("Token is :",token)
-    return res.status(200).json({message: "Login succesful",Token:token});
+    res.status(200).json({message: "Login succesful",Token:token});
   }
 );
 
