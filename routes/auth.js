@@ -19,8 +19,6 @@ router.get(
     }
 );
 
-
-
 // GitHub Login Route
 router.get("/github", passport.authenticate("github", { scope: ["user:email"] }),);
 
@@ -114,10 +112,12 @@ router.post("/login", (req, res, next) => {
 // Logout Route
 router.get("/logout", (req, res) => {
   console.log("logout")
-  req.logout((err) => {
-    if (err) return res.status(500).json({ message: "Logout failed" });
-    req.session = null;
-    //return res.redirect("http://localhost:5173");
+  req.session.destroy(err => {
+    if (err) {
+      console.log("Error destroying session:", err);
+    } else {
+      res.redirect('/login'); // or wherever
+    }
   });
 });
 
