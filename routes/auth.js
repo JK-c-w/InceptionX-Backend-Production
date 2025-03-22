@@ -12,9 +12,11 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 router.get(
   "/google/callback",
   passport.authenticate("google", { 
-    failureRedirect: "/login-failed", 
-    successRedirect: "https://inceptionx.vercel.app", 
+    failureRedirect: "/login-failed",  
     session: true }),
+    (req,res)=>{
+       res.redirect("https://inceptionx.vercel.app");
+    }
 );
 
 
