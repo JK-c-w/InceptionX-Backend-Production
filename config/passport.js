@@ -39,38 +39,6 @@ passport.use(
   )
 );
 
-//Git Strategy 
-passport.use(
-  new GitHubStrategy(
-    {
-      clientID:"Ov23lidhJibghLtoBzFd",
-       clientSecret:"9ecacb0bc4f58f9eecb8d2f2b2f0245f534654e2",
-      callbackURL:"https://inceptionx-production.onrender.com/auth/github/callback"
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        console.log(" GitHub Profile:", profile.displayName);
-
-        let user = await User.findOne({ githubId: profile.id });
-
-        if (!user) {
-          user = new User({
-            githubId: profile.id,
-            username: profile.username || profile.displayName || "Unknown",
-            avatar: profile.photos?.[0]?.value || "https://github.com/identicons/default.png",
-          });
-          await user.save();
-          console.log("New user registered:", user);
-        } else {
-          console.log(" Existing user found:", user);
-        }
-        return done(null, user);
-      } catch (err) {
-        console.error(" Error in GitHub Strategy:", err);
-        return done(err, null);
-      }
-    } 
-));
 // Local Strategy for Email Login
 passport.use(
   new LocalStrategy({ usernameField:"email"},async (email, password, done) => {

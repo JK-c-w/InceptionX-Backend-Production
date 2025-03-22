@@ -19,26 +19,6 @@ router.get(
     }
 );
 
-// GitHub Login Route
-router.get("/github", passport.authenticate("github", { scope: ["user:email"] }),);
-
-// GitHub Callback Route
-router.get(
-  "/github/callback",
-  passport.authenticate("github", {session:true,
-    failureRedirect:"https://inceptionx.vercel.app/login-failed",}),
-  (req,res)=>{
-    const payload ={
-       id:req.user.id,
-       username:req.user.username,
-    }
-    const token = genrateToken(payload);
-    console.log("Token is :",token)
-    res.cookie("access_token",token,{httpOnly:true});
-    res.redirect("https://inceptionx.vercel.app");
-  }
-);
-
 // Email Signup Route
 router.post("/signup", async (req, res) => {
   // console.log(req.body);
