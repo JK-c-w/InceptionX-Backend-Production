@@ -83,16 +83,13 @@ router.post("/signup", async (req, res) => {
       });
       const response= await user.save();
       console.log("Signup Successfully:", user);
-
-       const payload={
-            id:response.id,
-            username:response.username
-       }
-      console.log("payload :",payload);
-      const token=genrateToken(payload);
-      console.log("Token is :",token)
-      // Redirect to login page
-      res.status(200).json({message:"Account Created ",Token:token});
+      req.logIn(user, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Error logging in after signup" });
+        }
+        return res.status(200).json({ message: "Signup successful and logged in" });
+      });
+        
    } catch(err){
      console.error(err);
      res.status(500).json({message:"Server Error"});
@@ -106,17 +103,17 @@ router.post("/login", (req, res, next) => {
     if (err) return res.status(500).json({ message: "Server Error" });
     if (!user) return res.status(400).json({ message: info.message });
     
-    const payload={
-      id:user.id,
-      username:user.username
-    }
-    const token = genrateToken(payload);
-    return res.status(200).json({message: "Login succesful",Token:token});
+    // const payload={
+    //   id:user.id,
+    //   username:user.username
+    // }
+    // const token = genrateToken(payload);
+    // return res.status(200).json({message: "Login succesful",Token:token});
 
-    // req.logIn(user, (err) => {
-    //   if (err) return res.status(500).json({ message: "Server Error" });
-    //   return res.status(200).json({ message: "Login successful" });
-    // });
+    req.logIn(user, (err) => {
+      if (err) return res.status(500).json({ message: "Server Error" });
+      return res.status(200).json({ message: "Login successful" });
+    });
   })(req, res, next);
 }
 );
