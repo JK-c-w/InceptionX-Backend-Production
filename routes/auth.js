@@ -21,7 +21,7 @@ router.get(
     };
     const token = genrateToken(payload);
     console.log("Token is :",token)
-    res.status(200).json({message: "Login succesful",Token:token});
+    return res.redirect(`https://inceptionx.vercel.app/login?$token=${token}`);
   }
 );
 
