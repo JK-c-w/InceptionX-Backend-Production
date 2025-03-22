@@ -107,6 +107,7 @@ passport.deserializeUser(async (id, done) => {
     if(!user) {
        user=await EUser.findById(id);
     }
+    console.log(user)
     if (user) {
       done(null, {
         id: user.id,

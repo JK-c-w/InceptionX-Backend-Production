@@ -2,7 +2,6 @@ const express = require("express");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const EUser = require("../models/EmailUser");
-const {jwtAuthMiddleware,genrateToken}=require("../config/jwt")
 const router = express.Router();
 
 
@@ -14,8 +13,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { 
     failureRedirect: "/login-failed", 
-     successRedirect: "https://inceptionx.vercel.app",
-    // successRedirect:"http://localhost:5173",
+    successRedirect: "https://inceptionx.vercel.app", 
     session: true }),
 );
 
@@ -123,6 +121,7 @@ router.get("/logout", (req, res) => {
 
 // Get Current User
 router.get("/user",(req, res) => {
+  console.log("User:",req.user);
   if (req.user) {
       res.json({
       id: req.user.id,
