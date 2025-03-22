@@ -14,7 +14,8 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { 
     failureRedirect: "/login-failed", 
-    successRedirect: "https://inceptionx.vercel.app",
+    // successRedirect: "https://inceptionx.vercel.app",
+    successRedirect:"https://localhost:5127",
     session: true }),
 );
 
