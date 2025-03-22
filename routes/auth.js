@@ -12,17 +12,10 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 // Google Callback Route 
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login-failed", session: true }),
-  (req, res,next) => {
-    // Generate a JWT token if needed
-    const payload = {
-      id: req.user.id,
-      username: req.user.username,
-    };
-    const token = genrateToken(payload);
-    console.log("Token is :",token)
-    return res.redirect(`https://inceptionx.vercel.app/login?$token=${token}`);
-  }
+  passport.authenticate("google", { 
+    failureRedirect: "/login-failed", 
+    successRedirect: "https://inceptionx.vercel.app",
+    session: true }),
 );
 
 
@@ -138,7 +131,7 @@ router.get("/logout", (req, res) => {
 });
 
 // Get Current User
-router.get("/user",jwtAuthMiddleware,(req, res) => {
+router.get("/user",(req, res) => {
   if (req.user) {
       res.json({
       id: req.user.id,
