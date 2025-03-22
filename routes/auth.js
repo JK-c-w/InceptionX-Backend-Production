@@ -26,7 +26,7 @@ router.get(
     res.cookie("access_token", token, { httpOnly: true });
 
     // Redirect to the frontend or dashboard
-    res.redirect("http://localhost:3000/dashboard"); // Replace with your frontend URL
+    res.redirect("https://inceptionx.vercel.app/"); // Replace with your frontend URL
   }
 );
 
