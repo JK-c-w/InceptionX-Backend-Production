@@ -9,25 +9,20 @@ router.post("/register",ensureAuth ,async (req, res) => {
   try {
     console.log("Incoming Registration Data:", req.body); // Debug incoming request
 
-    const { teamName, teamSize, members } = req.body;
+    const { teamName, members } = req.body;
 
     // 🛠 Check if `req.body` is missing
     if (!req.body || Object.keys(req.body).length === 0) {
       console.error(" Request body is empty!");
       return res.status(400).json({ message: "Invalid request. No data received." });
     }
-
+     
     // 🛠 Validate required fields
     if (!teamName  || !Array.isArray(members)) {
       console.error(" Missing required fields:", req.body);
       return res.status(400).json({ message: "All required fields must be filled correctly." });
     }
 
-    // 🛠 Ensure `members.length` matches `teamSize`
-    if (members.length !== Number(teamSize)) {
-      console.error(` Mismatch: Expected teamSize ${teamSize}, but got ${members.length}`);
-      return res.status(400).json({ message: "Number of members must match team size." });
-    }
     // 🛠 Ensure user authentication is working
     if (!req.user || !req.user.id) {
       console.log("Authenticated User:", req.user); // Debugging
@@ -45,7 +40,7 @@ router.post("/register",ensureAuth ,async (req, res) => {
     // ✅ Save team to database
     const newTeam = new Team({
       teamName,
-      teamSize: Number(teamSize), // Ensure it's a number
+      teamSize: members.length , // Ensure it's a number
       // termsAccepted,
       members,
       createdBy: req.user.id,
