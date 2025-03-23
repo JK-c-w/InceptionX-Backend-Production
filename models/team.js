@@ -11,7 +11,6 @@ const memberSchema = new mongoose.Schema({
 const teamSchema = new mongoose.Schema({
   teamName: { type: String, required: true, unique: true },
   teamSize: { type: Number, required: true },
-  source: { type: String, required: true },
   // termsAccepted: { type: Boolean, required: true },
   members: [memberSchema],
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
