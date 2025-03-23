@@ -10,9 +10,7 @@ const memberSchema = new mongoose.Schema({
 
 const teamSchema = new mongoose.Schema({
   teamName: { type: String, required: true, unique: true },
-  teamDescription: { type: String },
   teamSize: { type: Number, required: true },
-  participantType: { type: String, required: true },
   source: { type: String, required: true },
   // termsAccepted: { type: Boolean, required: true },
   members: [memberSchema],
