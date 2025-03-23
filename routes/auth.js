@@ -15,7 +15,7 @@ router.get(
     failureRedirect: "/login-failed",  
     session: true }),
     (req,res)=>{
-       res.redirect("https://xception.vercel.app/");
+       res.redirect("https://xception.vercel.app");
     }
 );
 
