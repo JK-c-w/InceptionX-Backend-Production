@@ -5,14 +5,13 @@ const memberSchema = new mongoose.Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
   socialLink: { type: String, required: false },
-  role: { type: String, required: false },
+  college: { type: String, required: true },
 });
 
 const teamSchema = new mongoose.Schema({
   teamName: { type: String, required: true, unique: true },
   teamDescription: { type: String },
   teamSize: { type: Number, required: true },
-  theme: { type: String, required: true },
   participantType: { type: String, required: true },
   source: { type: String, required: true },
   // termsAccepted: { type: Boolean, required: true },

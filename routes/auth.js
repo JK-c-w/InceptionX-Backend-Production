@@ -108,7 +108,7 @@ router.get("/user",(req, res) => {
       res.json({
       id: req.user.id,
       username: req.user.username,
-      avatar: req.user.avatar || "https://github.com/identicons/default.png", // Fallback avatar
+      avatar: req.user.avatar || "", // Fallback avatar
     });
   }else {
     console.log("Unauthorized access",req.user);

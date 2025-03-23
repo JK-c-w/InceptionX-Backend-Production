@@ -9,7 +9,7 @@ router.post("/register",ensureAuth ,async (req, res) => {
   try {
     console.log("Incoming Registration Data:", req.body); // Debug incoming request
 
-    const { teamName, teamDescription, teamSize, theme, participantType, source, members } = req.body;
+    const { teamName, teamDescription, teamSize, participantType, source, members } = req.body;
 
     // 🛠 Check if `req.body` is missing
     if (!req.body || Object.keys(req.body).length === 0) {
