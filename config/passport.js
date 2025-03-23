@@ -14,10 +14,12 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID, // Add this to your .env file
       clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Add this to your .env file
       callbackURL: "https://inceptionx-production.onrender.com/auth/google/callback", // Replace with your callback URL
+      passReqTocallback:true
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
         // Find or create user in your database
+        console.log(profile.id);
         let user = await User.findOne({ googleId: profile.id });
         if (!user) {
           user = new User({
