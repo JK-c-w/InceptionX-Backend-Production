@@ -1,5 +1,6 @@
 const express = require("express");
 const Team = require("../models/team");
+const Score =require ("../models/Score")
 const { ensureAuth } = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -48,6 +49,15 @@ router.post("/register",ensureAuth ,async (req, res) => {
 
     await newTeam.save();
     console.log("Team Registered Successfully:", newTeam);
+
+     // ✅ Add the team to the Score database
+     const newScore = new Score({
+      teamName: newTeam.teamName,
+      uniqueID: newTeam._id.toString(), // Use the team's unique ID
+    });
+
+    await newScore.save();
+    console.log("Team Added to Score Database:", newScore);
 
     res.status(201).json({ message: "Team registered successfully!", teamId: newTeam._id });
   } catch (error) {

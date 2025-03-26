@@ -5,6 +5,8 @@ const memberSchema = new mongoose.Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
   college: { type: String, required: true },
+  UniRoll:{type:String ,required:true},
+  idCard:{type:String ,required:true},
   isLeader: { type: Boolean, required: true},
 });
 
