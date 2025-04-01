@@ -41,21 +41,21 @@ router.post("/register",ensureAuth ,async (req, res) => {
     }
 
      // Process each member's `id_card`
-     const processedMembers = await Promise.all(
-      members.map(async (member) => {
-        if (!member.id_card) {
-          throw new Error(`Missing id_card for member: ${member.name}`);
-        }
+    //  const processedMembers = await Promise.all(
+    //   members.map(async (member) => {
+    //     if (!member.id_card) {
+    //       throw new Error(`Missing id_card for member: ${member.name}`);
+    //     }
     
-        const writeStream = gfs.createWriteStream({
-          filename: `${teamName}-icCard.jpg`, // File name
-          content_type: "image/jpeg", // MIME type
-        });
-        // Add any additional processing logic here if needed
-        // return member; // Return the processed member
-        console.log("member:",member)
-      })
-    );
+    //     const writeStream = gfs.createWriteStream({
+    //       filename: `${teamName}-icCard.jpg`, // File name
+    //       content_type: "image/jpeg", // MIME type
+    //     });
+    //     // Add any additional processing logic here if needed
+    //     // return member; // Return the processed member
+    //     console.log("member:",member)
+    //   })
+    // );
     
 
     // ✅ Save team to database
