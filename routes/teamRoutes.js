@@ -1,6 +1,8 @@
 const express = require("express");
 const Team = require("../models/team");
 const Score =require ("../models/Score")
+const {Readable} =require("stream");
+const gfs=require("../config/gfs")
 const { ensureAuth } = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -37,6 +39,24 @@ router.post("/register",ensureAuth ,async (req, res) => {
       console.error(" Team name already exists:", teamName);
       return res.status(400).json({ message: "Team name already taken." });
     }
+
+     // Process each member's `id_card`
+     const processedMembers = await Promise.all(
+      members.map(async (member) => {
+        if (!member.id_card) {
+          throw new Error(`Missing id_card for member: ${member.name}`);
+        }
+    
+        const writeStream = gfs.createWriteStream({
+          filename: `${teamName}-icCard.jpg`, // File name
+          content_type: "image/jpeg", // MIME type
+        });
+        // Add any additional processing logic here if needed
+        // return member; // Return the processed member
+        console.log("member:",member)
+      })
+    );
+    
 
     // ✅ Save team to database
     const newTeam = new Team({
